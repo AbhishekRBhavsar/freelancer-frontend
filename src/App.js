@@ -13,7 +13,7 @@ const App = () => {
     (state) => state.auth
   )
   const dispatch = useDispatch();
-  const { data, isFetching, error } = useGetUserDetailsQuery('');
+  let { data, isFetching, error } = useGetUserDetailsQuery('');
 
   React.useEffect(() => {
 
@@ -22,13 +22,15 @@ const App = () => {
   }, [data, dispatch, isFetching]);
 
   if (!user?.role && userToken) {
-    return (
-      <Backdrop
-        sx={{ color: 'black', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    )
+    if (localStorage.getItem('userToken')) {
+      return (
+        <Backdrop
+          sx={{ color: '#000000', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      )
+    }
   }
 
 
@@ -37,7 +39,7 @@ const App = () => {
       <Routes>
         <Route
           path="/"
-          element={(user?.role === 'developer') ? <Navigate to="/home" /> : (user?.role === 'client') ? <Navigate to="/client/jobs" /> : (user?.role === 'admin') ? <Navigate to="/admin"/> : <Landing />}
+          element={(user?.role === 'developer') ? <Navigate to="/home" /> : (user?.role === 'client') ? <Navigate to="/client/jobs" /> : (user?.role === 'admin') ? <Navigate to="/admin" /> : <Landing />}
         />
         <Route
           path="/signup"
