@@ -1,44 +1,119 @@
 import React, { useEffect } from "react";
-import { useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { Home, Landing, Login, Signup, Profile } from "./screens";
+import { Home, Landing, Login, Signup, Profile, EditUser, ClientProfile, ClientHome, ClientEditProfile, ClientJobCreate, ClientJobs, Chat, FAQ, Invite, AdminDashBoard, AdminUserActivity } from "./screens";
+import { useSelector } from 'react-redux';
+import { useGetUserDetailsQuery } from './action/authService';
+import { setCredentials } from './action/authSlice';
+import { useDispatch } from 'react-redux';
+import { ProtectedRoute } from './screens/components';
+import { Backdrop, CircularProgress } from '@mui/material';
 
 const App = () => {
-  const [user, setUser] = useState({});
+  let { userInfo: user, userProfile: profile, userToken, clientProfile } = useSelector(
+    (state) => state.auth
+  )
+  const dispatch = useDispatch();
+  const { data, isFetching, error } = useGetUserDetailsQuery('');
 
-  useEffect(() => {
-    const theUser = localStorage.getItem("user");
+  React.useEffect(() => {
 
-    console.log("theUser", theUser);
-    if (theUser && !theUser.includes("undefined")) {
-      setUser(JSON.parse(theUser));
-    }
-  }, []);
+    if (data) dispatch(setCredentials(data.data.user));
+
+  }, [data, dispatch, isFetching]);
+
+  if (!user?.role && userToken) {
+    return (
+      <Backdrop
+        sx={{ color: 'black', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    )
+  }
+
 
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path="/"
-          element={user?.email ? <Navigate to="/home" /> : <Landing />}
+          element={(user?.role === 'developer') ? <Navigate to="/home" /> : (user?.role === 'client') ? <Navigate to="/client/jobs" /> : (user?.role === 'admin') ? <Navigate to="/admin"/> : <Landing />}
         />
         <Route
           path="/signup"
-          element={user?.email ? <Navigate to="/home" /> : <Signup />}
+          element={(user?.role === 'developer') ? <Navigate to="/home" /> : (user?.role === 'client') ? <Navigate to="/client/jobs" /> : (user?.role === 'admin') ? <Navigate to="/admin" /> : <Signup />}
         />
         <Route
           path="/login"
-          element={user?.email ? <Navigate to="/home" /> : <Login />}
+          element={(user?.role === 'developer') ? <Navigate to="/home" /> : (user?.role === 'client') ? <Navigate to="/client/jobs" /> : (user?.role === 'admin') ? <Navigate to="/admin" /> : <Login />}
         />
         <Route
-          path="/home"
-          element={user?.email ? <Home user={user} /> : <Navigate to="/" />}
+          path="/faq"
+          element={user.role ? <FAQ /> : <Navigate to="/" />}
         />
         <Route
-          path="/profile"
-          element={<Profile />}
-          // element={user?.email ? <Profile user={user} /> : <Navigate to="/" />}
+          path="/invite"
+          element={user.role ? <Invite /> : <Navigate to="/" />}
         />
+
+        <Route element={<ProtectedRoute />}>
+          <Route
+            path="/admin"
+            element={user?.role === 'admin' ? <AdminDashBoard user={user} /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/admin/user-activity"
+            element={user?.role === 'admin' ? <AdminUserActivity user={user} /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/home"
+            element={user?.role === 'developer' ? <Home user={user} /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/profile"
+            // element={<Profile />}
+            element={user?.role === 'developer' ? <Profile user={user} /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/chat/:search?"
+            element={user?.role === 'developer' ? <Chat /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/edit-user"
+            element={(user?.role === 'developer' && profile?.email) ? <EditUser userProfile={profile} /> : <Navigate to="/profile" />}
+          // element={user?.email ? <EditUser user={user} /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/client/home"
+            element={user?.role === 'client' ?
+              // <ClientHome user={user} /> : 
+              <Navigate to="/client/jobs" /> :
+              <Navigate to="/" />
+            }
+          />
+          <Route
+            path="/client/profile"
+            // element={<Profile />}
+            element={user?.role === 'client' ? <ClientProfile user={user} /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/client/chat"
+            element={user?.role === 'client' ? <Chat user={user} /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/client/edit"
+            element={(user?.role === 'client' && clientProfile?.email) ? <ClientEditProfile userProfile={profile} /> : <Navigate to="/client/profile" />}
+          />
+          <Route
+            path="/client/jobs"
+            element={user?.role === 'client' ? <ClientJobs user={user} /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/client/job/create"
+            element={user?.role === 'client' ? <ClientJobCreate user={user} /> : <Navigate to="/" />}
+          />
+
+        </Route>
         {/* <Route
           path="/chat"
           element={<Chat />}

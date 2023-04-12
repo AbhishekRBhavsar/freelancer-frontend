@@ -17,28 +17,28 @@ import Typography from '@mui/material/Typography';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import { Navbar, SkillsCard } from "./components";
 import { Backdrop, CircularProgress } from '@mui/material';
-import { SchoolTwoTone, WorkTwoTone, CalendarMonthTwoTone } from '@mui/icons-material';
+import { SchoolTwoTone, WorkTwoTone, CalendarMonthTwoTone, LocationCityTwoTone } from '@mui/icons-material';
 import axios from 'axios';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { useGetProfileDetailsQuery } from '../action/authService';
+import { useGetClientProfileDetailsQuery } from '../action/authService';
 import { setProfile } from '../action/authSlice';
 
 // https://developers.google.com/identity/gsi/web/reference/js-reference
 const getImg = (str) => {
-  if (!str.startsWith('http')) {
+  if (!str.startsWith('https')) {
     return `${process.env.REACT_APP_BACKEND_URL}/${str}`
   }
   return str
 }
 
-const Profile = ({ user }) => {
+const ClientProfile = ({ user }) => {
 
   // const [profile, setProfile] = React.useState(null);
-  const { userProfile: profile } = useSelector((state) => state.auth)
+  const { clientProfile: profile } = useSelector((state) => state.auth)
   const navigate = useNavigate();
 
-  const { data,  isFetching } = useGetProfileDetailsQuery();
+  const { data, isFetching } = useGetClientProfileDetailsQuery();
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -46,13 +46,10 @@ const Profile = ({ user }) => {
   }, [data, dispatch]);
 
   const toEditProfile = () => {
-    navigate('/edit-user', { state: profile  });
+    navigate('/client/edit', { state: profile });
   }
 
-  // useEffect(() => {
-
-  // }, [handleProfile]);
-  if(!profile) {
+  if (isFetching) {
     return <div>
       <Backdrop
         sx={{ color: '#fffff', zIndex: (theme) => theme.zIndex.drawer + 5 }}
@@ -88,9 +85,9 @@ const Profile = ({ user }) => {
             </CardContent>
 
             {/* add button for edit profile */}
-            <Button variant="outlined" onClick={() => {toEditProfile()}} sx={{ mt: 2, width: '100%', color: '#606060', outlineColor: '#606060' }}>
+            <Button variant="outlined" onClick={() => { toEditProfile() }} sx={{ mt: 2, width: '100%', color: '#606060', outlineColor: '#606060' }}>
               <Link to={{
-                pathname: 'client/edit',
+                pathname: '/edit-user',
                 user: profile
               }}
                 underline="hover"
@@ -112,18 +109,17 @@ const Profile = ({ user }) => {
                         About
                       </Typography>
                       <Typography component="div">
-                        {profile?.about}
+                        {profile?.about || 'No information'}
                       </Typography>
                     </CardContent>
 
                   </Card>
                 </Box>
               </Grid>
-              <Grid item xs={12} sm={4} md={4} >
-                {/* framework... */}
+              {/* <Grid item xs={12} sm={4} md={4} >
                 <Typography variant="h6">Skills</Typography>
                 <Card variant="outlined" sx={{ display: 'flex', flexWrap: 'wrap', padding: 1, mb: 2 }}>
-                  {[...profile?.technologies || [], ...profile?.languages || [], ...profile?.libsAndPackages || [], ...profile?.databases || [], ...profile?.frameworks || []].map((skill) => (
+                  {[...profile.technologies, ...profile.languages, ...profile.libsAndPackages, ...profile.databases, ...profile.frameworks].map((skill) => (
                     <Box
                       sx={{
                         justifyContent: 'center',
@@ -140,19 +136,36 @@ const Profile = ({ user }) => {
                     </Box>
                   ))}
                 </Card>
-              </Grid>
+              </Grid> */}
 
               <Grid item xs={12} sm={4} md={4} >
-                <Typography variant="h6">Project</Typography>
+                <Typography variant="h6">Projects</Typography>
                 <Card variant="outlined" sx={{ padding: 1 }}>
-                  <CardContent>
+                  {
+                    profile?.projects?.length > 0 && (
+                      profile?.projects?.map((project, index) => (
+                        <>
+                        <CardContent>
+                          <Typography sx={{ fontSize: 24 }}>
+                            {project.title}
+                          </Typography>
+                          <Typography component="div">
+                            {project.description}
+                          </Typography>
+                        </CardContent>
+                        {index%2 === 0 && <Divider sx={{ my: 1 }} />}
+                        </>
+                      ))
+                    )
+                  }
+                  {/* <CardContent>
                     <Typography sx={{ fontSize: 24 }}>
-                      {profile?.projects && profile?.projects[0]?.title}
+                      {profile?.projects[0]?.title}
                     </Typography>
                     <Typography component="div">
-                      {profile?.projects && profile.projects[0]?.description}
+                      {profile?.projects[0]?.description}
                     </Typography>
-                  </CardContent>
+                  </CardContent> */}
                 </Card>
               </Grid>
 
@@ -160,34 +173,56 @@ const Profile = ({ user }) => {
                 <Card variant="outlined" sx={{ padding: 1 }}>
                   <CardContent>
                     <Typography sx={{ fontSize: 24 }}>
-                      work experience
+                      Organization
                     </Typography>
+                    <Grid container sx={{ m: 1 }}>
+                      <Grid item xs={1.5}>
+                        <WorkTwoTone sx={{ fontSize: 70 }} />
+                      </Grid>
+                      <Grid item xs={10.5}>
+                        <Typography sx={{ fontSize: 24 }}>
+                          {profile?.organization?.name}
+                        </Typography>
+                        {/* organization name and date side by side */}
+                        <Grid container>
+                          <Grid item xs={6}>
+                            <Typography sx={{ fontSize: 16 }}>
+                              {profile?.organization?.website}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={6}>
+                            <Typography sx={{ fontSize: 16, display: 'flex', alignItems: 'center' }}>
+                              <LocationCityTwoTone />
+                                {profile?.organization?.location}
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                        <Typography component="div">
+                          {profile?.organization?.about}
+                        </Typography>
+                      </Grid>
+                    </Grid>
 
                     {/* one organization.... */}
-                    {workExp(profile?.experience && profile?.experience[0])}
-                    {/* horizontal line in MUI*/}
-                    {/* <Divider sx={{ my: 1 }} /> */}
-                    {/* {workExp(profile?.experience[0])} */}
+                    {/* {workExp(profile?.experience[0] || {})} */}
                   </CardContent>
                 </Card>
               </Grid>
 
               {/* Education */}
-              <Grid item xs={12} sm={4} md={4} >
+              {/* <Grid item xs={12} sm={4} md={4} >
                 <Card variant="outlined" sx={{ padding: 1 }}>
                   <CardContent>
                     <Typography sx={{ fontSize: 24 }}>
                       Education
                     </Typography>
 
-                    {/* one organization.... */}
-                    {Education(profile?.education && profile?.education[0])}
-                    {/* horizontal line in MUI*/}
+                    {Education(profile?.education[0])}
                     <Divider sx={{ my: 1 }} />
-                    {/* {Education(profile?.education[0])} */}
+                    {Education(profile?.education[0])}
                   </CardContent>
                 </Card>
-              </Grid>
+              </Grid> */}
             </Grid>
           </Grid>
         </Grid>
@@ -255,4 +290,4 @@ const workExp = (exp) => (
   </Grid>
 );
 
-export default Profile;
+export default ClientProfile;

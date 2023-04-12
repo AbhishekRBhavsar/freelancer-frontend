@@ -416,36 +416,3 @@ const SkillsCard = () => {
 // }
 export default SkillsCard;
 
-                
-                
-                
-                
-                
-                
-                
-      //           <Box sx={{ display: "flex", alignItems: "center" }}>
-      //             <DevicesOutlined sx={{ mr: 2 }} />
-      //             <Typography variant="h5">Platforms and Services</Typography>
-      //             <IconButton onClick={handleOpen}>
-      //               <EditOutlined />
-      //             </IconButton>
-      //           </Box>
-      //           <List>
-      //             {platformsAndServices.map((platform, index) => (
-      //               <ListItem disablePadding key={index}>
-      //                 <ListItemIcon>
-      //                   <Checkbox
-      //                     edge="start"
-      //                     checked={platform.checked}
-      //                     tabIndex={-1}
-      //                     disableRipple
-      //                   />
-      //                 </ListItemIcon>
-      //                 <ListItemText primary={platform.name} />
-      //               </ListItem>
-      //             ))}
-      //           </List>
-      //         </CardContent>
-      //       </Modal>
-      //   </Box>
-      // </>

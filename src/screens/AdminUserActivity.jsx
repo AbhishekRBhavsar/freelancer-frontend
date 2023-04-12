@@ -1,8 +1,12 @@
+
+
+
 import React from "react";
 import { Navbar, SkillsCard } from "./components";
-import { JobListing } from "./components";
+import { UserActivity } from "./components";
+// import { JobListing } from "./components";
 
-const Home = ({ user }) => {
+const AdminUserActivity = ({ user }) => {
   // const logout = () => {
   //   localStorage.removeItem("user");
   //   window.location.reload();
@@ -10,9 +14,9 @@ const Home = ({ user }) => {
   return (
     <>
       <Navbar />
-      <JobListing />
+      <UserActivity />
     </>
   );
 };
 
-export default Home;
+export default AdminUserActivity;
