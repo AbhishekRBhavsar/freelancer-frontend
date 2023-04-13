@@ -21,17 +21,17 @@ const App = () => {
 
   }, [data, dispatch, isFetching]);
 
-  if (!user?.role && userToken) {
-    if (localStorage.getItem('userToken')) {
-      return (
-        <Backdrop
-          sx={{ color: '#000000', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        >
-          <CircularProgress color="inherit" />
-        </Backdrop>
-      )
-    }
-  }
+  // if (!user?.role && userToken) {
+  //   if (localStorage.getItem('userToken')) {
+  //     return (
+  //       <Backdrop
+  //         sx={{ color: '#000000', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+  //       >
+  //         <CircularProgress color="inherit" />
+  //       </Backdrop>
+  //     )
+  //   }
+  // }
 
 
   return (
