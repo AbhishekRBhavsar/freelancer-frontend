@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/freelancer-frontend/static/js/main.37d30dfa.js",
+    "main.js": "/freelancer-frontend/static/js/main.067d8f48.js",
     "index.html": "/freelancer-frontend/index.html",
-    "main.37d30dfa.js.map": "/freelancer-frontend/static/js/main.37d30dfa.js.map"
+    "main.067d8f48.js.map": "/freelancer-frontend/static/js/main.067d8f48.js.map"
   },
   "entrypoints": [
-    "static/js/main.37d30dfa.js"
+    "static/js/main.067d8f48.js"
   ]
 }
