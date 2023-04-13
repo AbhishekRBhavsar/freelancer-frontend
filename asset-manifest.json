@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.js": "/freelancer-frontend/signup/static/js/main.fb68c68b.js",
-    "index.html": "/freelancer-frontend/signup/index.html",
-    "main.fb68c68b.js.map": "/freelancer-frontend/signup/static/js/main.fb68c68b.js.map"
+    "main.js": "/freelancer-frontend/static/js/main.fb68c68b.js",
+    "index.html": "/freelancer-frontend/index.html",
+    "main.fb68c68b.js.map": "/freelancer-frontend/static/js/main.fb68c68b.js.map"
   },
   "entrypoints": [
     "static/js/main.fb68c68b.js"
