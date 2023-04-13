@@ -1,7 +1,7 @@
 {
   "name": "app",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "homepage": "https://sonar5858.github.io/freelancer-frontend/",
   "dependencies": {
     "@date-io/date-fns": "^1.3.13",
